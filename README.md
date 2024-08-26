@@ -6,7 +6,7 @@
 
    2.1  npm i or npm install (make sure node is installed in your machine).
    
-   2.2  run npm run dev.
+   2.2  execute command: npm run dev.
   
 4. Open Your browser.
 

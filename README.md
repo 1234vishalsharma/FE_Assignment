@@ -4,7 +4,7 @@
 
 2. Open cmd in the cloned directory and execute command sequently.
 
-   2.1  npm i or npm install (make sure node in installed in your machine).
+   2.1  npm i or npm install (make sure node is installed in your machine).
    
    2.2  run npm run dev.
   

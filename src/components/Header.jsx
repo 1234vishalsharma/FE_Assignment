@@ -1,5 +1,5 @@
 import { Breadcrumbs, Link } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import SearchBox from './SearchBox';
 
@@ -17,6 +17,15 @@ const Header = () => {
       sethome(false);
       setdashboard(true);
     }
+
+    useEffect(() => {
+      const pathname = window.location.pathname;
+      if(pathname.includes("Dashboard")){
+        setdashboard(true);
+      }else{
+        sethome(true);
+      }
+    }, [])
 
       const breadcrumbs = [
         <span underline="none" key="1" className={`font-bold hover:cursor-pointer ${home ? 'text-blue-400' : 'text-inherit'}`}  onClick={GotoHome}>

@@ -1,23 +1,25 @@
 import Dashboard from './pages/Dashboard'
 import Header from './components/Header'
-import {BrowserRouter , Routes, Route} from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import LocomotiveScroll from 'locomotive-scroll';
-
 
 function App() {
-  
-  const locomotiveScroll = new LocomotiveScroll();
   return (
+    <ErrorBoundary>
       <BrowserRouter>
-        <Header/>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-
-          <Route path='/Dashboard' element={<Dashboard/>}/>
-        </Routes>
+        <div className="min-h-screen bg-gray-50">
+          <Header />
+          <main>
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/Dashboard' element={<Dashboard />} />
+            </Routes>
+          </main>
+        </div>
       </BrowserRouter>
-  )
+    </ErrorBoundary>
+  );
 }
 
-export default App
+export default App;

@@ -1,48 +1,101 @@
 import { Button } from '@mui/material';
-import React, { useState } from 'react';
-import {useDispatch} from 'react-redux';
+import React, { useState, memo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { addWidget } from '../store/reducers/categoryReducer';
 
-const AddWidget = (props) => {
-  const [title , setTitle] = useState();
-  const [text , setText] = useState();
-  const [clicked , setClicked] = useState(false);
+const AddWidget = memo(({ cid, size }) => {
+  const [title, setTitle] = useState('');
+  const [text, setText] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
 
-  const AddtoCategory = () => {
-    if(!text || !title){
-      alert("title and text cant be empty");
+  const handleAddToCategory = useCallback(async () => {
+    if (!text.trim() || !title.trim()) {
+      alert("Title and text cannot be empty");
       return;
     }
-    const wid = props.size + 1;
-    const cid = props.cid;
-    const data = {cid , wid , title , text};
-    dispatch(addWidget(data));
-    setClicked(false);
-  }
-  return (
-    <div className='flex flex-col gap-4 p-2 h-56 w-96 rounded-xl bg-white'>
-     <div style={{'width':'100%', 'height':'100%', 'display':'flex' , 'justifyContent':'center' , 'alignItems':'center'}}>
-        {clicked ? null : <Button onClick={()=>setClicked(true)} variant={'outlined'} >Add Widget +</Button>}
-        {
-          clicked ? 
-            <div className='flex gap-3 justify-center items-center flex-col'>
-              <div className='flex gap-2 justify-center items-center'>
-                <label className='font-bold'>Widget Title</label>
-                <input onChange={(e)=>setTitle(e.target.value)} className='border p-1 border-black outline-none rounded-md' type="text" /> 
-              </div>
-              <div className='flex gap-2 justify-center items-center'>
-                <label className='font-bold'>Widget Text</label>
-                <input onChange={(e)=>setText(e.target.value)} className='border p-1 border-black outline-none rounded-md' type="text" /> 
-              </div>
-              <Button onClick={AddtoCategory} variant={'contained'}>Add Widget</Button>              
-            </div>
-            
-            : null
-        }
-     </div>
-    </div>
-  )
-}
+    
+    setIsSubmitting(true);
+    try {
+      const wid = size + 1;
+      const data = { cid, wid, title: title.trim(), text: text.trim() };
+      dispatch(addWidget(data));
+      setTitle('');
+      setText('');
+      setIsExpanded(false);
+    } catch (error) {
+      console.error('Error adding widget:', error);
+      alert('Failed to add widget. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [cid, size, title, text, dispatch]);
 
-export default AddWidget
+  const handleCancel = useCallback(() => {
+    setTitle('');
+    setText('');
+    setIsExpanded(false);
+  }, []);
+
+  return (
+    <div className='flex flex-col gap-4 p-4 h-72 w-[400px] rounded-xl bg-white shadow-lg border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors duration-200'>
+      <div className='w-full h-full flex justify-center items-center'>
+        {!isExpanded ? (
+          <Button 
+            onClick={() => setIsExpanded(true)} 
+            variant='outlined'
+          >
+            Add Widget +
+          </Button>
+        ) : (
+          <div className='flex flex-col gap-2 w-full p-2 h-full'>
+            <div className='flex flex-col gap-2'>
+              <label className='font-semibold text-gray-700'>Widget Title</label>
+              <input 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+                className='border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' 
+                type="text"
+                placeholder="Enter widget title"
+                disabled={isSubmitting}
+              /> 
+            </div>
+            <div className='flex flex-col gap-2'>
+              <label className='font-semibold text-gray-700'>Widget Text</label>
+              <textarea 
+                value={text} 
+                onChange={(e) => setText(e.target.value)} 
+                className='border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none' 
+                rows={3}
+                placeholder="Enter widget description"
+                disabled={isSubmitting}
+              /> 
+            </div>
+            <div className='flex gap-2'>
+              <Button 
+                onClick={handleAddToCategory} 
+                variant='contained'
+                disabled={isSubmitting || !title.trim() || !text.trim()}
+                className='flex-1'
+              >
+                {isSubmitting ? 'Adding...' : 'Add Widget'}
+              </Button>
+              <Button 
+                onClick={handleCancel} 
+                variant='outlined'
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+AddWidget.displayName = 'AddWidget';
+
+export default AddWidget;

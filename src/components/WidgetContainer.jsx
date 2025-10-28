@@ -16,21 +16,18 @@ const WidgetContainer = ({isVisible, onClose }) => {
     return (
       <div
         ref={widgetRef}
-        className="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-lg transform translate-x-full z-50">
-        <div className="flex justify-between items-center mb-4 p-4 text-white bg-blue-700">
-          <h2 className="text-lg font-semibold">Add Widget</h2>
-          <button onClick={onClose} className="text-xl font-bold">
+        className="fixed top-0 right-0 h-full w-full max-w-2xl bg-white shadow-lg transform translate-x-full z-50 flex flex-col">
+        <div className="flex justify-between items-center p-4 text-white bg-blue-700 flex-shrink-0">
+          <h2 className="text-lg font-semibold">Add Widgets</h2>
+          <button onClick={onClose} className="text-xl font-bold hover:bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center">
             &times;
           </button>
         </div>
-        <span className='p-4'>Personalise Your dashboard by adding the following widget</span><br/>
-        <div className="space-y-4">
-
-          {/* Place the widgets from category array */}
-        
-          <div className='space-y-4 p-4'>
-           <WidgetList/>
-          </div>
+        <div className="p-4 text-sm text-gray-600 flex-shrink-0">
+          Personalize your dashboard by adding the following widget
+        </div>
+        <div className="flex-1 overflow-hidden px-4 pb-4">
+          <WidgetList onClose={onClose}/>
         </div>
       </div>
     );

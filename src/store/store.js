@@ -1,11 +1,18 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import WidgetReducer from './reducers/categoryReducer.jsx';
-export default configureStore({
+
+export const store = configureStore({
   reducer: {
-    categoryReducer: WidgetReducer
+    widgetDashboard: WidgetReducer
   },
-  middleware : (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      ignoredPaths: ['_persist']
+    },
   }),
-})
+  devTools: process.env.NODE_ENV !== 'production',
+});
+
+export default store;

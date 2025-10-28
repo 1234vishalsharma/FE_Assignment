@@ -1,25 +1,38 @@
-import React from 'react'
-import {useDispatch} from 'react-redux';
+import React, { memo, useCallback } from 'react'
+import { useDispatch } from 'react-redux';
 import { removeWidget } from '../store/reducers/categoryReducer';
 
-const Card = (props) => {
+const Card = memo(({ cid, wid, title, text }) => {
   const dispatch = useDispatch();
-  const onClose = () => {
-    const data = {cid:props.cid , wid:props.wid};
-    dispatch(removeWidget(data))
-  }
-    return (
-    <div className='flex flex-col gap-4 p-2 h-56 w-96 rounded-xl bg-white overflow-hidden'>
-      <div className='flex justify-between'>
-        <h3 className='font-semibold ml-4'>{props.title}</h3>
-          <button onClick={onClose} className="text-lg font-bold mr-4 h-8 flex items-center justify-center w-8 hover:bg-slate-200 rounded-full">
-            &times;
-          </button>
-      </div>
-      <img className='h-28 w-full flex items-center' src="./graph.svg" alt="Loading..." />
-      <span className='text-center'>{props.text}</span>
-    </div>
-  )
-}
+  
+  const handleRemove = useCallback(() => {
+    dispatch(removeWidget({ cid, wid }));
+  }, [dispatch, cid, wid]);
 
-export default Card
+  return (
+    <div className='flex flex-col gap-4 p-4 h-72 w-[400px] rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden border border-gray-100'>
+      <div className='flex justify-between items-start'>
+        <h3 className='font-semibold text-lg text-gray-800 flex-1 pr-2'>{title}</h3>
+        <button 
+          onClick={handleRemove} 
+          className="text-xl font-bold h-8 w-8 flex items-center justify-center hover:bg-red-100 hover:text-red-600 rounded-full transition-colors duration-200 flex-shrink-0"
+          aria-label={`Remove ${title} widget`}
+        >
+          &times;
+        </button>
+      </div>
+      <div className='flex-1 flex items-center justify-center bg-gray-50 rounded-lg'>
+        <img 
+          className='h-24 w-full object-contain' 
+          src="./graph.svg" 
+          alt="Widget visualization" 
+        />
+      </div>
+      <p className='text-center text-gray-600 text-sm leading-relaxed'>{text}</p>
+    </div>
+  );
+});
+
+Card.displayName = 'Card';
+
+export default Card;
